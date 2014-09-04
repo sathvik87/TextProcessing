@@ -6,11 +6,17 @@ public class Resource {
 	int term_count;
 	String term;
 	
-	Resource(int id, String text, int count, String term) {
+	public Resource(int id, String text) {
 		this.postid = id;
 		this.text = text;
-		this.term_count = count;
+	}
+	
+	public void setTerm(String term) {
 		this.term = term;
+	}
+	
+	public void setTermCount(int count) {
+		this.term_count = count;
 	}
 	
 	public int getPostId() {

@@ -23,7 +23,7 @@ import com.sathvik.utils.Utils;
 
 public class Main {
 
-	static String query = "is a spa town in North Rhine-Westphalia, Germany Geographically, Aachen is the westernmost city of Germany, located along its borders with Belgium and the Netherlands, 61 km (38 mi) west-southwest of Cologne.[4][5] It is located within a former coal-mining region, and this fact was important in its economic history.[5] RWTH Aachen University, one of Germany's Universities of Excellence, is located in the city.[nb 1][6] Aachen's predominant economic focus is on science, engineering, information technology and related sectors. In 2009, Aachen was ranked 8th among cities in Germany for innovation";
+	static String query = "protein drink";
 	
 
 	public static void main(String args[]) {
@@ -34,7 +34,7 @@ public class Main {
 		// Utils.print("Cleaned Sentence:");
 		// Utils.println(clean_sentence);
 		
-		Utils.query_words = HashMultiset.create(
+		Utils.QUERY_WORDS = HashMultiset.create(
 				  Splitter.on(CharMatcher.WHITESPACE).omitEmptyStrings()
 				    .split(query));
 

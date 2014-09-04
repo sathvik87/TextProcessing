@@ -5,7 +5,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multiset;
+import com.sathvik.models.Resource;
 import com.sathvik.textprocessing.PorterStemmer;
 
 /**
@@ -16,7 +18,9 @@ import com.sathvik.textprocessing.PorterStemmer;
  */
 
 public class Utils {
-	public static Multiset query_words;
+	public static Multiset QUERY_WORDS;
+	public static int THRESHOLD_WORD_FREQ;
+	public static HashMultimap<String,Resource> TERM_FREQ_MAP = HashMultimap.create();
 	public static String readFile(String path, Charset encoding) throws IOException {
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded, encoding);
