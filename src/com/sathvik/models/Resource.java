@@ -15,7 +15,7 @@ public class Resource {
 		this.term = term;
 	}
 	
-	public void setTermCount(int count) {
+	public void setTermFreq(int count) {
 		this.term_count = count;
 	}
 	
