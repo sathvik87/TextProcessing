@@ -23,7 +23,7 @@ import com.sathvik.utils.Utils;
 
 public class Main {
 
-	static String query = "protein drink";
+	static String query = "the protein drink";
 	
 
 	public static void main(String args[]) {

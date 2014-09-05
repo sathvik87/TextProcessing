@@ -25,13 +25,14 @@ import com.sathvik.utils.Utils;
 
 public class SAXHandler extends DefaultHandler {
 
+	private int totalNoOfPost = 0;
 	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 
 		Resource resource;
 		if (qName.equalsIgnoreCase("row")) {
-
+			totalNoOfPost++;
 			String id = attributes.getValue("Id");
 			String bodyText = attributes.getValue("Body");
 
@@ -50,8 +51,8 @@ public class SAXHandler extends DefaultHandler {
 					Utils.TERM_FREQ_MAP.put((String) word, resource);
 				}
 
-				Gson gson = new Gson();
-				// Utils.println("JSON STR "+gson.toJson(Utils.TERM_FREQ_MAP.get("protein")));
+				//Gson gson = new Gson();
+				//Utils.println("JSON STR "+gson.toJson(Utils.TERM_FREQ_MAP.asMap()));
 				// Utils.println(word+"::"+count);
 			}
 
@@ -80,12 +81,25 @@ public class SAXHandler extends DefaultHandler {
 
 	public void endDocument() throws SAXException {
 		Utils.println("Document reached its end");
+		HashMap<String, Integer> idfmap = new HashMap<String, Integer>();
+		
 		// Find Term freq for all the posts in inverted index.
 		for (Object term : Utils.TERM_FREQ_MAP.keys()) {
 			Collection<Resource> collections = Utils.TERM_FREQ_MAP
 					.get((String) term);
+			float irfweight = (float) Math.log(totalNoOfPost/collections.size());
+			//int irfweight = (int) Math.pow((int) (totalNoOfPost/collections.size()),2);
+			
+			Utils.println("TERM::"+term);
+			Utils.println("WEIGHT::"+irfweight);
+			
+			//idfmap.put((String)term, (int)idfweight);
 			for (Resource r : collections) {
-				Utils.TERM_FREQ_MAP1.put(r.getPostId(), r.getTermFreq());
+				//With irf weight
+				Utils.TERM_FREQ_MAP1.put(r.getPostId(), r.getTermFreq() * (int)irfweight);
+				
+				//Without irf weight.
+				//Utils.TERM_FREQ_MAP1.put(r.getPostId(), r.getTermFreq());
 			}
 
 		}
@@ -105,8 +119,8 @@ public class SAXHandler extends DefaultHandler {
 				termfreq_map, true);
 
 		for (Integer postid : sorted_termfreq_map.keySet()) {
-			Utils.println("Sum of Term Freq of postId: " + postid + ": "
-					+ termfreq_map.get(postid));
+			//Utils.println("Sum of Term Freq of postId: " + postid + ": "
+			//		+ termfreq_map.get(postid));
 		}
 
 	}
