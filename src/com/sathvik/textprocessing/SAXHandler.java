@@ -1,15 +1,15 @@
 package com.sathvik.textprocessing;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -19,13 +19,13 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
-import com.google.gson.Gson;
 import com.sathvik.models.Resource;
 import com.sathvik.utils.Utils;
 
 public class SAXHandler extends DefaultHandler {
 
 	private int totalNoOfPost = 0;
+
 	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
@@ -35,6 +35,12 @@ public class SAXHandler extends DefaultHandler {
 			totalNoOfPost++;
 			String id = attributes.getValue("Id");
 			String bodyText = attributes.getValue("Body");
+			String parentId = attributes.getValue("ParentId");
+
+			// Temp, may not be required in future.
+			if (parentId != null && parentId.length() > 0) {
+				Utils.id2parentid.put(new Integer(id), new Integer(parentId));
+			}
 
 			// Split the text into multiset to count the frequency.
 			Multiset<String> bagOfWords = HashMultiset.create(Splitter
@@ -51,8 +57,8 @@ public class SAXHandler extends DefaultHandler {
 					Utils.TERM_FREQ_MAP.put((String) word, resource);
 				}
 
-				//Gson gson = new Gson();
-				//Utils.println("JSON STR "+gson.toJson(Utils.TERM_FREQ_MAP.asMap()));
+				// Gson gson = new Gson();
+				// Utils.println("JSON STR "+gson.toJson(Utils.TERM_FREQ_MAP.asMap()));
 				// Utils.println(word+"::"+count);
 			}
 
@@ -82,24 +88,27 @@ public class SAXHandler extends DefaultHandler {
 	public void endDocument() throws SAXException {
 		Utils.println("Document reached its end");
 		HashMap<String, Integer> idfmap = new HashMap<String, Integer>();
-		
+
 		// Find Term freq for all the posts in inverted index.
 		for (Object term : Utils.TERM_FREQ_MAP.keys()) {
 			Collection<Resource> collections = Utils.TERM_FREQ_MAP
 					.get((String) term);
-			float irfweight = (float) Math.log(totalNoOfPost/collections.size());
-			//int irfweight = (int) Math.pow((int) (totalNoOfPost/collections.size()),2);
-			
-			Utils.println("TERM::"+term);
-			Utils.println("WEIGHT::"+irfweight);
-			
-			//idfmap.put((String)term, (int)idfweight);
+			float irfweight = (float) Math.log(totalNoOfPost
+					/ collections.size());
+			// int irfweight = (int) Math.pow((int)
+			// (totalNoOfPost/collections.size()),2);
+
+			Utils.println("TERM::" + term);
+			Utils.println("WEIGHT::" + irfweight);
+
+			// idfmap.put((String)term, (int)idfweight);
 			for (Resource r : collections) {
-				//With irf weight
-				Utils.TERM_FREQ_MAP1.put(r.getPostId(), r.getTermFreq() * (int)irfweight);
-				
-				//Without irf weight.
-				//Utils.TERM_FREQ_MAP1.put(r.getPostId(), r.getTermFreq());
+				// With irf weight
+				Utils.TERM_FREQ_MAP1.put(r.getPostId(), r.getTermFreq()
+						* (int) irfweight);
+
+				// Without irf weight.
+				// Utils.TERM_FREQ_MAP1.put(r.getPostId(), r.getTermFreq());
 			}
 
 		}
@@ -117,10 +126,33 @@ public class SAXHandler extends DefaultHandler {
 
 		Map<Integer, Integer> sorted_termfreq_map = Utils.sortMapByValue(
 				termfreq_map, true);
-
+		ArrayList<Integer> parentIds = new ArrayList<Integer>();
+		int i = 0;
 		for (Integer postid : sorted_termfreq_map.keySet()) {
-			//Utils.println("Sum of Term Freq of postId: " + postid + ": "
-			//		+ termfreq_map.get(postid));
+			if (i < 3) {
+				if (Utils.id2parentid.containsKey(postid)) {
+					int parentid = Utils.id2parentid.get(postid);
+					if (parentid != 0) {
+						parentIds.add(new Integer(parentid));
+					}
+				}
+			}
+			i++;
+			// Utils.println("Sum of Term Freq of postId: " + postid + ": "
+			// + termfreq_map.get(postid));
+		}
+
+		// RelationCreator rCreator = new RelationCreator(parentIds);
+
+		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+
+		try {
+			SAXParser saxParser = saxParserFactory.newSAXParser();
+			RelationCreator handler = new RelationCreator(parentIds);
+			saxParser.parse(new File("resources/Posts.xml"), handler);
+
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			e.printStackTrace();
 		}
 
 	}

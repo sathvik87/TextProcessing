@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -30,6 +31,9 @@ public class Utils {
 	public static HashMultimap<String,Resource> TERM_FREQ_MAP = HashMultimap.create();
 	
 	public static HashMultimap<Integer,Integer> TERM_FREQ_MAP1 = HashMultimap.create();
+
+	//This is temp, may not require in future.
+	public static HashMap<Integer,Integer> id2parentid = new HashMap<Integer,Integer>();
 	
 	public static String readFile(String path, Charset encoding) throws IOException {
 		byte[] encoded = Files.readAllBytes(Paths.get(path));

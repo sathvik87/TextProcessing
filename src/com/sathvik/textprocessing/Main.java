@@ -43,7 +43,7 @@ public class Main {
 		try {
 			SAXParser saxParser = saxParserFactory.newSAXParser();
 			SAXHandler handler = new SAXHandler();
-			saxParser.parse(new File("resources/Posts.xml"), handler);
+			saxParser.parse(new File("resources/Posts_small.xml"), handler);
 
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
