@@ -15,6 +15,7 @@ import y.layout.circular.CircularLayouter;
 import y.view.Graph2D;
 import y.view.Graph2DLayoutExecutor;
 import y.view.Graph2DView;
+import y.view.NodeRealizer;
 
 import com.google.common.collect.HashMultimap;
 import com.sathvik.models.Resource;
@@ -76,17 +77,27 @@ public class SimpleViewer {
 	/** Creates a simple graph structure. */
 	public void populateGraph(Graph2D graph,
 			HashMultimap<Integer, Resource> nodemap) {
+		graph.clear();
+		Utils.print("NODEMAP SIZE::" + nodemap.keySet().size());
 
-		Utils.print("NODEMAP SIZE::" + nodemap.size());
+		for (int parentId : nodemap.keySet()) {
 
-		for (int parentId : nodemap.keys()) {
-			graph.getDefaultNodeRealizer().setFillColor(Color.RED);
-
+			NodeRealizer parentNodeRealizer = graph.getDefaultNodeRealizer();
+			parentNodeRealizer.setWidth(50);
+			parentNodeRealizer.setLabelText("" + parentId);
 			Node parent = graph.createNode();
 
 			Collection<Resource> collections = nodemap.get(parentId);
 			for (Resource r : collections) {
-				graph.getDefaultNodeRealizer().setFillColor(Color.GREEN);
+				NodeRealizer childNodeRealizer = graph.getDefaultNodeRealizer();
+				if (Utils.expert_post_ids.contains(r.getPostId())) {
+					childNodeRealizer.setFillColor(Color.RED);
+				} else {
+					childNodeRealizer.setFillColor(Color.GREEN);
+				}
+
+				childNodeRealizer.setWidth(50);
+				childNodeRealizer.setLabelText("" + r.getPostId());
 				Node child = graph.createNode();
 				graph.createEdge(parent, child);
 			}

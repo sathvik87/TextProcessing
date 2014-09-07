@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multiset;
@@ -26,14 +27,17 @@ import com.sathvik.textprocessing.PorterStemmer;
  */
 
 public class Utils {
+	public final static int NO_OF_NODES = 5; 
 	public static Multiset QUERY_WORDS;
 	public static int THRESHOLD_WORD_FREQ = 2;
 	public static HashMultimap<String,Resource> TERM_FREQ_MAP = HashMultimap.create();
 	
-	public static HashMultimap<Integer,Integer> TERM_FREQ_MAP1 = HashMultimap.create();
+	public static HashMultimap<Integer,Float> TERM_FREQ_MAP1 = HashMultimap.create();
 
 	//This is temp, may not require in future.
 	public static HashMap<Integer,Integer> id2parentid = new HashMap<Integer,Integer>();
+	
+	public static Set<Integer> expert_post_ids;
 	
 	public static String readFile(String path, Charset encoding) throws IOException {
 		byte[] encoded = Files.readAllBytes(Paths.get(path));

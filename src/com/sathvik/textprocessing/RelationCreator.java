@@ -24,7 +24,7 @@ public class RelationCreator extends DefaultHandler {
 			String id = attributes.getValue("Id");
 			String postTypeId = attributes.getValue("PostTypeId");
 			
-			Utils.println("PARENT IDS SIZE:: "+parentIds.size());
+			//Utils.println("PARENT IDS SIZE:: "+parentIds.size());
 			if(postTypeId.equals("2")) {
 				String parentId = attributes.getValue("ParentId");
 				if(parentIds.contains(new Integer(parentId))) {
@@ -52,7 +52,6 @@ public class RelationCreator extends DefaultHandler {
 	}
 
 	public void endDocument() throws SAXException {
-		
 		mapper.showViewer();
 	}
 }

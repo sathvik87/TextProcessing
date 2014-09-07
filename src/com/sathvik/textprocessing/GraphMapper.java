@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import com.google.common.collect.HashMultimap;
 import com.sathvik.models.Resource;
+import com.sathvik.utils.Utils;
 import com.sathvik.viewer.SimpleViewer;
 
 public class GraphMapper {
@@ -21,10 +22,15 @@ public class GraphMapper {
 	public HashMultimap<Integer, Resource> getNodeMap() {
 		return Parent2ChildNodes;
 	}
+	
+	public int getSize() {
+		return Parent2ChildNodes.keySet().size();
+	}
 
 	public void showViewer() {
 		SimpleViewer sv = new SimpleViewer(new Dimension(700, 700),
 				SimpleViewer.class.getName());
+		//Utils.println("SHOW VIEWER::::"+Parent2ChildNodes.keySet().size());
 		sv.populateGraph(sv.getGraph(), Parent2ChildNodes);
 		sv.show();
 	}
