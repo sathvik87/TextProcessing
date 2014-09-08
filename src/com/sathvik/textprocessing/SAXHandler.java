@@ -48,7 +48,8 @@ public class SAXHandler extends DefaultHandler {
 					.on(CharMatcher.WHITESPACE).omitEmptyStrings()
 					.split(bodyText));
 			int count = 0;
-			// Iterate the Query terms.
+			// Iterate the Query terms. 
+			//Ignore if freq is too less.
 			for (Object word : Utils.QUERY_WORDS.elementSet()) {
 				count = bagOfWords.count(word);
 				if (count > Utils.THRESHOLD_WORD_FREQ) {
@@ -87,7 +88,7 @@ public class SAXHandler extends DefaultHandler {
 	}
 
 	public void endDocument() throws SAXException {
-		Utils.println("Document reached its end");
+		//Utils.println("Document reached its end");
 		HashMap<String, Integer> idfmap = new HashMap<String, Integer>();
 
 		// Find Term freq for all the posts in inverted index.
@@ -99,8 +100,8 @@ public class SAXHandler extends DefaultHandler {
 			// int irfweight = (int) Math.pow((int)
 			// (totalNoOfPost/collections.size()),2);
 
-			Utils.println("TERM::" + term);
-			Utils.println("WEIGHT::" + irfweight);
+			//Utils.println("TERM::" + term);
+			//Utils.println("WEIGHT::" + irfweight);
 
 			// idfmap.put((String)term, (int)idfweight);
 			for (Resource r : collections) {
@@ -126,8 +127,8 @@ public class SAXHandler extends DefaultHandler {
 			float sum = 0;
 			for (Float freq : term_freq) {
 				if (freq != sum_freq) {
-					Utils.print("FREQ: " + freq + "::");
-					Utils.println("MAX FREQ: " + sum_freq);
+					//Utils.print("FREQ: " + freq + "::");
+					//Utils.println("MAX FREQ: " + sum_freq);
 				}
 				sum = sum + (freq / sum_freq);
 				// sum = sum + freq;
@@ -140,6 +141,7 @@ public class SAXHandler extends DefaultHandler {
 				termfreq_map, true);
 		ArrayList<Integer> parentIds = new ArrayList<Integer>();
 		Utils.expert_post_ids = sorted_termfreq_map.keySet();
+		Utils.println("No of candidate experts found: "+Utils.expert_post_ids.size());
 		int i = 0;
 		for (Integer postid : Utils.expert_post_ids) {
 			if (i < Utils.NO_OF_NODES) {
@@ -154,6 +156,7 @@ public class SAXHandler extends DefaultHandler {
 			i++;
 		}
 
+		Utils.println("Visualizing few experts and related candidates... ");
 		// RelationCreator rCreator = new RelationCreator(parentIds);
 
 		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();

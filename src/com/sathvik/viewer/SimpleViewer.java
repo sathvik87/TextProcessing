@@ -78,7 +78,7 @@ public class SimpleViewer {
 	public void populateGraph(Graph2D graph,
 			HashMultimap<Integer, Resource> nodemap) {
 		graph.clear();
-		Utils.print("NODEMAP SIZE::" + nodemap.keySet().size());
+		//Utils.print("NODEMAP SIZE::" + nodemap.keySet().size());
 
 		for (int parentId : nodemap.keySet()) {
 
